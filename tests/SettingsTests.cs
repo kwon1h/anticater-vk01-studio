@@ -12,6 +12,7 @@ internal static class SettingsTests
         value.Normalize(); Check(value.DoubleClickMs == 360 && value.TripleClickMs == 360 && value.LongPressMs == 1000, "legacy timing is preserved");
         Check(value.SingleAction == "PlayPause" && value.LongAction == "SwitchOutput", "legacy actions are preserved");
         Check(value.Language == "en", "new and migrated profiles default to English");
+        Check(value.ClickInput == KnobInput.Keyboard, "existing profiles retain the F13 input path");
         value.OutputDeviceIds.AddRange(new[] { "endpoint-a", "endpoint-b" });
         var independent = value.Clone(); independent.OutputDeviceIds.RemoveAt(0);
         Check(value.OutputDeviceIds.Count == 2 && independent.OutputDeviceIds.Count == 1, "draft output order does not mutate saved selections");
@@ -31,7 +32,10 @@ internal static class SettingsTests
         bool rejected = false; try { Calibration.Recommend(value, records, out why); } catch (InvalidOperationException) { rejected = true; }
         Check(rejected, "screen practice cannot train physical calibration");
         string file = Path.Combine(Path.GetTempPath(), "vk01-settings-test-" + Guid.NewGuid().ToString("N") + ".json");
-        try { value.Save(file); proposed.Save(file); var loaded = Settings.Load(file); Check(loaded.LongPressMs == 350 && File.Exists(file + ".bak"), "atomic save keeps the previous settings backup"); Check(loaded.OutputDeviceIds[1] == "endpoint-b" && loaded.Language == "en", "output order and language survive save and reload"); }
+        try { value.Save(file); proposed.ClickInput = KnobInput.Receiver; proposed.Save(file); var loaded = Settings.Load(file); Check(loaded.LongPressMs == 350 && File.Exists(file + ".bak"), "atomic save keeps the previous settings backup"); Check(loaded.OutputDeviceIds[1] == "endpoint-b" && loaded.Language == "en", "output order and language survive save and reload"); Check(loaded.ClickInput == KnobInput.Receiver, "receiver mode survives save and reload"); }
         finally { File.Delete(file); if (File.Exists(file + ".bak")) File.Delete(file + ".bak"); }
+        value.ClickInput = "AnyKeyboard"; bool invalidInput = false;
+        try { value.Normalize(); } catch (InvalidDataException) { invalidInput = true; }
+        Check(invalidInput, "unknown input modes are rejected");
     }
 }

@@ -1,4 +1,4 @@
-﻿param([string]$Version = '1.0.0')
+﻿param([string]$Version = '1.1.0')
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path $PSScriptRoot -Parent
 $releaseRoot = Join-Path $repoRoot 'release'
@@ -13,6 +13,8 @@ VK01 Studio — ANTICATER VK01 Windows 커스텀 소프트웨어
 
 1. USB로 연결한 VK01의 클릭 키를 ANTICATER 앱에서 F13으로 저장합니다.
    ANTICATER 설정 프로그램: https://anticater.com/pages/download
+   동봉 2.4GHz 수신기는 클릭을 Media → Treble +로 저장하고,
+   VK01 Studio의 '노브 입력 방식'에서 '2.4GHz 수신기 · Treble +'를 선택하세요.
 2. VK01Studio.exe를 실행합니다. 우상단에서 EN / 한국어를 전환합니다.
 3. 출력 장치에서 두 개 이상 선택하고 전환 순서를 정합니다.
 4. 클릭별 동작과 시간을 조절하고 '저장 및 적용'을 누릅니다.
@@ -35,6 +37,8 @@ VK01 Studio — Custom Windows software for ANTICATER VK01
 
 1. Connect over USB. Map the knob click to F13 in the ANTICATER utility and save it.
    ANTICATER setup utility: https://anticater.com/pages/download
+   For the supplied 2.4 GHz receiver, map click to Media → Treble + instead,
+   then select '2.4 GHz receiver · Treble +' under Knob input in VK01 Studio.
 2. Run VK01Studio.exe. English is default; use the top-right language switch for Korean.
 3. In Audio outputs, select at least 2 devices and arrange their cycle order.
 4. Set click actions/timing and click Save changes.

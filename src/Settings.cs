@@ -15,6 +15,7 @@ internal sealed class Settings
     public List<string> OutputDeviceIds { get; set; }
     public bool SwitchCommunications { get; set; }
     public string DeviceMatch { get; set; }
+    public string ClickInput { get; set; }
     public string SingleAction { get; set; }
     public string DoubleAction { get; set; }
     public string TripleAction { get; set; }
@@ -27,6 +28,9 @@ internal sealed class Settings
         if (OutputDeviceIds == null) OutputDeviceIds = new List<string>();
         OutputDeviceIds = OutputDeviceIds.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         if (string.IsNullOrWhiteSpace(DeviceMatch)) DeviceMatch = "VID_05AC&PID_022C&MI_01";
+        if (string.IsNullOrEmpty(ClickInput)) ClickInput = KnobInput.Keyboard;
+        if (ClickInput != KnobInput.Keyboard && ClickInput != KnobInput.Receiver)
+            throw new InvalidDataException(Ui.T("Unsupported knob input mode.", "지원하지 않는 노브 입력 방식입니다."));
         if (DoubleClickMs == 0) DoubleClickMs = MultiClickMs > 0 ? MultiClickMs : 320;
         if (TripleClickMs == 0) TripleClickMs = DoubleClickMs;
         if (!SeparateTripleGap) TripleClickMs = DoubleClickMs;

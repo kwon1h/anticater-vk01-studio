@@ -130,7 +130,7 @@ internal sealed class Controller : ApplicationContext
             if (trial != null && ((trialFinishAt > 0 && now >= trialFinishAt) || now >= trialDeadline)) FinishTrial();
         };
         timer.Start();
-        Program.Log("READY ui_version=2 double_ms=" + live.DoubleClickMs + " triple_ms=" + live.TripleClickMs + " long_ms=" + live.LongPressMs);
+        Program.Log("READY ui_version=3 click_input=" + live.ClickInput + " double_ms=" + live.DoubleClickMs + " triple_ms=" + live.TripleClickMs + " long_ms=" + live.LongPressMs);
     }
     private void Rebuild()
     {
@@ -162,7 +162,7 @@ internal sealed class Controller : ApplicationContext
     {
         value.Normalize(); value.Save(Path.Combine(Program.Root, "settings.json")); Saved = value.Clone(); live = value.Clone(); Rebuild();
         status = Ui.T("Saved · changes are now active", "저장 완료 · 재시작 없이 적용됨");
-        Program.Log("SETTINGS_APPLIED double_ms=" + live.DoubleClickMs + " triple_ms=" + live.TripleClickMs + " long_ms=" + live.LongPressMs);
+        Program.Log("SETTINGS_APPLIED click_input=" + live.ClickInput + " double_ms=" + live.DoubleClickMs + " triple_ms=" + live.TripleClickMs + " long_ms=" + live.LongPressMs);
     }
     internal void SetPractice(bool value) { practice = value; ResetInput(); status = value ? Ui.T("Practice mode · no actions sent", "연습 모드 · 실제 동작 없음") : Ui.T("Live mode · actions enabled", "실제 동작 실행 중"); }
     internal void StartTrial(ClickGesture expected)
@@ -185,7 +185,7 @@ internal sealed class Controller : ApplicationContext
     }
     internal void TargetKey(ushort key, bool up)
     {
-        if (key == 0x7c) Receive(up, "VK01"); else if (!up && !paused) Rotation();
+        if (key == 0x7c && live.ClickInput == KnobInput.Keyboard) Receive(up, "VK01"); else if (!up && !paused) Rotation();
     }
     internal void Simulate(bool up) { if (practice || trial != null) Receive(up, "Screen"); }
     private void Receive(bool up, string source)
@@ -206,7 +206,7 @@ internal sealed class Controller : ApplicationContext
             if (current == null || detector.PendingCount == 0) current = new Measurement { Start = now, Source = source };
             else current.Gaps.Add(now - current.LastUp);
             pressedAt = now; current.LastDown = now;
-            detector.Down(now); status = Ui.T("Holding…", "누르는 중"); Program.Log("INPUT F13 DOWN source=" + source);
+            detector.Down(now); status = Ui.T("Holding…", "누르는 중"); Program.Log("INPUT " + live.ClickInput + " DOWN source=" + source);
         }
         else
         {
@@ -218,7 +218,7 @@ internal sealed class Controller : ApplicationContext
                 trial.Holds.Add(duration); trial.LastUp = now;
                 if (trial.Holds.Count >= trial.TargetCount) trialFinishAt = now + Math.Max(live.DoubleClickMs, live.TripleClickMs) + 70;
             }
-            Program.Log("INPUT F13 UP source=" + source + " held_ms=" + duration);
+            Program.Log("INPUT " + live.ClickInput + " UP source=" + source + " held_ms=" + duration);
             detector.Up(now);
             if (detector.PendingCount == 0) current = null;
             status = detector.PendingCount > 0 ? Ui.T("Waiting for another click", "다음 클릭을 기다리는 중") : Ui.T("Input complete", "입력 완료");
@@ -226,7 +226,10 @@ internal sealed class Controller : ApplicationContext
     }
     internal void TargetHid(byte[] bytes)
     {
-        for (int i = 1; i < bytes.Length; i++) if (bytes[i] != 0) { Rotation(); return; }
+        KnobSignal signal = KnobInput.Consumer(bytes, live.ClickInput);
+        if (signal == KnobSignal.Press) Receive(false, "VK01");
+        else if (signal == KnobSignal.Release) Receive(true, "VK01");
+        else if (signal == KnobSignal.Rotation && !paused) Rotation();
     }
     private void Rotation()
     {

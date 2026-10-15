@@ -27,10 +27,12 @@ if ($Test) {
     $src = Join-Path $repoRoot 'src'
     Compile @(('/out:' + (Join-Path $outputRoot 'DetectorTests.exe')), (Join-Path $src 'ClickDetector.cs'), (Join-Path $repoRoot 'tests\DetectorTests.cs'))
     & (Join-Path $outputRoot 'DetectorTests.exe'); if ($LASTEXITCODE -ne 0) { throw 'Gesture tests failed.' }
-    $settingsTestArgs = @('/r:System.Web.Extensions.dll','/r:System.Core.dll', ('/out:' + (Join-Path $outputRoot 'SettingsTests.exe')), (Join-Path $src 'ClickDetector.cs'), (Join-Path $src 'Settings.cs'), (Join-Path $src 'Ui.cs'), (Join-Path $repoRoot 'tests\SettingsTests.cs'))
+    $settingsTestArgs = @('/r:System.Web.Extensions.dll','/r:System.Core.dll', ('/out:' + (Join-Path $outputRoot 'SettingsTests.exe')), (Join-Path $src 'ClickDetector.cs'), (Join-Path $src 'KnobInput.cs'), (Join-Path $src 'Settings.cs'), (Join-Path $src 'Ui.cs'), (Join-Path $repoRoot 'tests\SettingsTests.cs'))
     Compile $settingsTestArgs
     & (Join-Path $outputRoot 'SettingsTests.exe'); if ($LASTEXITCODE -ne 0) { throw 'Settings tests failed.' }
-    $audioTestArgs = @('/r:System.Web.Extensions.dll','/r:System.Core.dll', ('/out:' + (Join-Path $outputRoot 'AudioTests.exe')), (Join-Path $src 'ClickDetector.cs'), (Join-Path $src 'Settings.cs'), (Join-Path $src 'Ui.cs'), (Join-Path $src 'AudioDevices.cs'), (Join-Path $repoRoot 'tests\AudioTests.cs'))
+    $audioTestArgs = @('/r:System.Web.Extensions.dll','/r:System.Core.dll', ('/out:' + (Join-Path $outputRoot 'AudioTests.exe')), (Join-Path $src 'ClickDetector.cs'), (Join-Path $src 'KnobInput.cs'), (Join-Path $src 'Settings.cs'), (Join-Path $src 'Ui.cs'), (Join-Path $src 'AudioDevices.cs'), (Join-Path $repoRoot 'tests\AudioTests.cs'))
     Compile $audioTestArgs
     & (Join-Path $outputRoot 'AudioTests.exe'); if ($LASTEXITCODE -ne 0) { throw 'Audio tests failed.' }
+    Compile @(('/out:' + (Join-Path $outputRoot 'InputTests.exe')), (Join-Path $src 'ClickDetector.cs'), (Join-Path $src 'KnobInput.cs'), (Join-Path $repoRoot 'tests\InputTests.cs'))
+    & (Join-Path $outputRoot 'InputTests.exe'); if ($LASTEXITCODE -ne 0) { throw 'Input tests failed.' }
 }

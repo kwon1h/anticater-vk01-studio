@@ -26,7 +26,7 @@ English is the default language. Switch instantly between **English and Korean**
 
 ## Quick start
 
-1. Download `VK01Studio-v1.0.0-win-x64.zip` from [Releases](https://github.com/kwon1h/anticater-vk01-studio/releases/latest) and extract it to a **permanent folder**.
+1. Download `VK01Studio-v1.1.0-win-x64.zip` from [Releases](https://github.com/kwon1h/anticater-vk01-studio/releases/latest) and extract it to a **permanent folder**.
 2. Connect the VK01 over USB. In the **[ANTICATER setup utility](https://anticater.com/pages/download), map the knob click to `F13` and save it to the device**. Keep your existing rotation mappings.
 3. Run `VK01Studio.exe`. Open **Audio outputs**, check at least two playback devices and arrange their cycle order. Optionally include the communications role.
 4. Click **Save changes**. Disable **Practice** or close the settings window to enable real gestures.
@@ -42,6 +42,17 @@ English is the default language. Switch instantly between **English and Korean**
 | Hold | Cycle selected audio outputs |
 
 New profiles use a **320ms click window** and **600ms hold**. Existing saved timing is preserved.
+
+## Using the supplied 2.4 GHz USB receiver
+
+The receiver supports **single, double, triple and hold** gestures. The tested receiver did not forward F13 or F12 click mappings, so receiver mode uses a separate consumer-control input.
+
+1. Connect the knob in 2.4 GHz mode.
+2. In the [ANTICATER setup utility](https://anticater.com/pages/download), map the **center click → Media → Treble +**, then **Save**. Keep rotation mappings unchanged.
+3. In VK01 Studio, select **Controls → Knob input → 2.4 GHz receiver · Treble +** and **Save changes**.
+4. Test in practice mode, then disable practice or close settings.
+
+Real press/release reports preserve hold duration, so hold fires at your configured threshold before release. Input mode is saved on the PC. To return to F13, change both the vendor mapping and VK01 Studio input mode. Direct Bluetooth pairing remains unverified.
 
 ## Your audio cycle
 
@@ -62,8 +73,8 @@ Suggestions add a 60ms margin to the 95th-percentile click gap and a 200ms margi
 ## Compatibility and persistence
 
 - Windows 10 / 11 **x64**, **.NET Framework 4.8+**. Tested on Windows 10; a separate Windows 11 hardware test is pending.
-- Targets USB `VID_05AC / PID_022C / MI_01`. Identical VID/PID devices can also match. Other revisions, Bluetooth and receiver modes are unverified.
-- Only the **F13 mapping** resides on the device. Gestures, actions and endpoint choices are stored **on the PC** and require VK01 Studio to be running.
+- Targets wired USB and the supplied 2.4 GHz receiver at `VID_05AC / PID_022C / MI_01`. Identical VID/PID devices can also match. Other revisions and direct Bluetooth pairing are unverified.
+- The **F13 or Treble + click mapping** resides on the device. Input mode, gestures, actions and endpoint choices are stored **on the PC** and require VK01 Studio to be running.
 - Settings, up to 80 recent measurements and diagnostic logs live in `%LOCALAPPDATA%\VK01Studio`. No telemetry or network upload functionality is implemented.
 - Autostart uses the current user's `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` entry. Re-enable it from the new location after moving the app.
 - This is an **unofficial community project**, not a firmware replacement or a vendor ANTICATER product.

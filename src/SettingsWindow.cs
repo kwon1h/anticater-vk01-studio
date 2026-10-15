@@ -95,7 +95,7 @@ internal sealed class SettingsWindow : Window
         connection = Text("•  VK01", 12, Muted); sideBottom.Children.Add(connection);
         var startup = Switch(T("Start with Windows", "Windows 자동 시작"), Startup.Enabled, value => { Startup.Set(value); Message(value ? T("Autostart enabled", "자동 시작을 켰습니다") : T("Autostart disabled", "자동 시작을 껐습니다"), false); });
         startup.Margin = new Thickness(0, 22, 0, 18); startup.FontSize = 11; sideBottom.Children.Add(startup);
-        sideBottom.Children.Add(Text("ANTICATER VK01  /  v1.0.0", 10, Muted)); Grid.SetRow(sideBottom, 2); side.Children.Add(sideBottom); root.Children.Add(side);
+        sideBottom.Children.Add(Text("ANTICATER VK01  /  v1.1.0", 10, Muted)); Grid.SetRow(sideBottom, 2); side.Children.Add(sideBottom); root.Children.Add(side);
         var main = new Grid { Margin = new Thickness(30, 24, 30, 22) };
         main.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); main.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         main.RowDefinitions.Add(new RowDefinition()); main.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -149,6 +149,22 @@ internal sealed class SettingsWindow : Window
     }
     private void ControlsPage(StackPanel content)
     {
+        var inputPanel = Stack(); inputPanel.Children.Add(Heading(T("Knob input", "노브 입력 방식")));
+        var inputChoice = new ComboBox {
+            ItemsSource = new[] {
+                new ActionChoice { Key = KnobInput.Keyboard, Value = T("F13 keyboard input (default)", "F13 키보드 입력 (기본)") },
+                new ActionChoice { Key = KnobInput.Receiver, Value = T("2.4 GHz receiver · Treble +", "2.4GHz 수신기 · Treble +") }
+            }, DisplayMemberPath = "Value", SelectedValuePath = "Key", SelectedValue = draft.ClickInput,
+            HorizontalAlignment = HorizontalAlignment.Left, MinWidth = 300, FontSize = 12
+        };
+        AutomationProperties.SetName(inputChoice, T("Knob input mode", "노브 입력 방식"));
+        inputChoice.SelectionChanged += delegate { if (building || inputChoice.SelectedValue == null) return; draft.ClickInput = (string)inputChoice.SelectedValue; Changed(); Build(); };
+        inputPanel.Children.Add(inputChoice);
+        var inputHint = Text(draft.ClickInput == KnobInput.Receiver
+            ? T("In ANTICATER, map the center click to Media → Treble + and Save. Single, double, triple and hold use the receiver's press/release signals.", "ANTICATER에서 가운데 클릭을 Media → Treble +로 지정하고 Save하세요. 수신기의 누름·뗌 신호로 싱글·더블·트리플·롱클릭을 판정합니다.")
+            : T("In ANTICATER, map the center click to Keyboard → F13 and Save. If F13 does not arrive over the supplied receiver, choose receiver mode above.", "ANTICATER에서 가운데 클릭을 Keyboard → F13으로 지정하고 Save하세요. 동봉 수신기에서 F13이 전달되지 않으면 위에서 수신기 방식을 선택하세요."), 11, Muted);
+        inputHint.Margin = new Thickness(0, 12, 0, 0); inputPanel.Children.Add(inputHint);
+        content.Children.Add(Card(inputPanel, new Thickness(0, 0, 0, 18)));
         var columns = new Grid(); columns.ColumnDefinitions.Add(new ColumnDefinition()); columns.ColumnDefinitions.Add(new ColumnDefinition());
         var timing = Stack(); timing.Children.Add(Heading(T("Timing", "시간 기준")));
         var presets = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 20) };
@@ -165,7 +181,7 @@ internal sealed class SettingsWindow : Window
         ActionRow(actions, ClickGesture.Double, "02", draft.DoubleAction, value => draft.DoubleAction = value);
         ActionRow(actions, ClickGesture.Triple, "03", draft.TripleAction, value => draft.TripleAction = value);
         ActionRow(actions, ClickGesture.Long, "—", draft.LongAction, value => draft.LongAction = value);
-        var hint = Text(T("First use: map the knob click to F13 in ANTICATER. Choose devices in Audio outputs.", "처음 사용: ANTICATER에서 노브 클릭을 F13으로 저장하세요. 전환할 장치는 ‘출력 장치’에서 선택합니다."), 11, Muted); hint.Margin = new Thickness(0, 12, 0, 0); actions.Children.Add(hint);
+        var hint = Text(T("Match the ANTICATER click mapping to the input mode above. Choose devices in Audio outputs.", "ANTICATER 클릭 매핑을 위 입력 방식에 맞추세요. 전환할 장치는 ‘출력 장치’에서 선택합니다."), 11, Muted); hint.Margin = new Thickness(0, 12, 0, 0); actions.Children.Add(hint);
         var actionsCard = Card(actions, new Thickness(9, 0, 0, 0)); Grid.SetColumn(actionsCard, 1); columns.Children.Add(actionsCard); content.Children.Add(columns);
     }
     private UIElement Timing(string caption, int value, int min, int max, Action<int> change)
