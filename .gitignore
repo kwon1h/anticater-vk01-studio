@@ -1,0 +1,11 @@
+/build/
+/release/
+/private/
+*.user
+*.suo
+settings.json*
+measurements.json
+activity*.log
+raw-probe.log
+*.tmp
+.vs/

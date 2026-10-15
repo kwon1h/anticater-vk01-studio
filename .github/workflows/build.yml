@@ -1,0 +1,22 @@
+name: Windows build
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        shell: powershell
+        run: .\scripts\build.ps1 -Test
+      - name: Package
+        shell: powershell
+        run: .\scripts\package.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VK01Studio-win-x64
+          path: release/*
