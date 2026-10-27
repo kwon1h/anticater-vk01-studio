@@ -1,4 +1,4 @@
-﻿param([string]$Version = '1.1.0')
+﻿param([string]$Version = '1.2.0')
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path $PSScriptRoot -Parent
 $releaseRoot = Join-Path $repoRoot 'release'
@@ -18,8 +18,8 @@ VK01 Studio — ANTICATER VK01 Windows 커스텀 소프트웨어
 2. VK01Studio.exe를 실행합니다. 우상단에서 EN / 한국어를 전환합니다.
 3. 출력 장치에서 두 개 이상 선택하고 전환 순서를 정합니다.
 4. 클릭별 동작과 시간을 조절하고 '저장 및 적용'을 누릅니다.
-5. 연습 모드를 해제하거나 창을 닫으면 실제 동작이 실행됩니다.
-6. 왼쪽 아래에서 Windows 자동 시작을 켜거나 끌 수 있습니다.
+5. 저장된 설정은 실제 동작합니다. 실행 없이 시험하려면 연습 모드를 켜세요.
+6. 왼쪽 아래에서 Windows 자동 시작을 켜고, Windows 시작 앱에서도 켜져 있는지 확인하세요.
 
 기본값: 한 번=재생/일시정지, 두 번=다음 곡, 세 번=이전 곡, 길게=출력 전환.
 설정 창을 닫아도 트레이에서 동작합니다. 종료는 트레이 메뉴에서 합니다.
@@ -42,8 +42,8 @@ VK01 Studio — Custom Windows software for ANTICATER VK01
 2. Run VK01Studio.exe. English is default; use the top-right language switch for Korean.
 3. In Audio outputs, select at least 2 devices and arrange their cycle order.
 4. Set click actions/timing and click Save changes.
-5. Disable Practice or close the window to enable real actions.
-6. Toggle Start with Windows at the bottom left if desired.
+5. Saved settings are active. Enable Practice to test without real actions.
+6. Enable Start with Windows below and ensure Windows startup apps also enables VK01 Studio.
 
 Defaults: single=play/pause, double=next, triple=previous, hold=cycle outputs.
 Closing settings keeps the app running in the tray. Exit from the tray menu to quit.

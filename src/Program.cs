@@ -42,7 +42,8 @@ internal static class Program
         {
             if (!created)
             {
-                try { using (var signal = EventWaitHandle.OpenExisting(@"Local\VK01ClickControl.ShowSettings")) signal.Set(); } catch { }
+                if (Array.IndexOf(args, "--background") < 0)
+                    try { using (var signal = EventWaitHandle.OpenExisting(@"Local\VK01ClickControl.ShowSettings")) signal.Set(); } catch { }
                 return;
             }
             Application.EnableVisualStyles(); Application.SetCompatibleTextRenderingDefault(false);
@@ -130,7 +131,7 @@ internal sealed class Controller : ApplicationContext
             if (trial != null && ((trialFinishAt > 0 && now >= trialFinishAt) || now >= trialDeadline)) FinishTrial();
         };
         timer.Start();
-        Program.Log("READY ui_version=3 click_input=" + live.ClickInput + " double_ms=" + live.DoubleClickMs + " triple_ms=" + live.TripleClickMs + " long_ms=" + live.LongPressMs);
+        Program.Log("READY ui_version=4 mode=live click_input=" + live.ClickInput + " double_ms=" + live.DoubleClickMs + " triple_ms=" + live.TripleClickMs + " long_ms=" + live.LongPressMs);
     }
     private void Rebuild()
     {
@@ -146,11 +147,11 @@ internal sealed class Controller : ApplicationContext
     internal void ShowSettings()
     {
         if (form != null && form.IsVisible) { form.WindowState = System.Windows.WindowState.Normal; form.Activate(); return; }
-        practice = true; live = Saved.Clone(); Rebuild();
+        practice = false; live = Saved.Clone(); Rebuild();
         form = new SettingsWindow(this); System.Windows.Forms.Integration.ElementHost.EnableModelessKeyboardInterop(form); form.Show(); form.Activate();
     }
     internal void CloseSettings() { practice = false; live = Saved.Clone(); Rebuild(); status = Ui.T("Running with saved settings", "저장된 설정으로 동작 중"); }
-    internal void Preview(Settings value) { value.Normalize(); live = value.Clone(); Rebuild(); status = Ui.T("Preview updated · try your VK01", "새 기준으로 연습할 수 있습니다"); }
+    internal void Preview(Settings value) { value.Normalize(); live = (practice ? value : Saved).Clone(); Rebuild(); status = practice ? Ui.T("Preview updated · try your VK01", "새 기준으로 연습할 수 있습니다") : Ui.T("Saved settings are active", "저장된 설정으로 동작 중"); }
     internal void SetLanguage(string language)
     {
         var value = Saved.Clone(); value.Language = language; value.Save(Path.Combine(Program.Root, "settings.json")); Saved = value; live.Language = language; Ui.Lang = language;
@@ -164,7 +165,7 @@ internal sealed class Controller : ApplicationContext
         status = Ui.T("Saved · changes are now active", "저장 완료 · 재시작 없이 적용됨");
         Program.Log("SETTINGS_APPLIED click_input=" + live.ClickInput + " double_ms=" + live.DoubleClickMs + " triple_ms=" + live.TripleClickMs + " long_ms=" + live.LongPressMs);
     }
-    internal void SetPractice(bool value) { practice = value; ResetInput(); status = value ? Ui.T("Practice mode · no actions sent", "연습 모드 · 실제 동작 없음") : Ui.T("Live mode · actions enabled", "실제 동작 실행 중"); }
+    internal void SetPractice(bool value) { practice = value; ResetInput(); Program.Log("MODE " + (value ? "practice" : "live")); status = value ? Ui.T("Practice mode · no actions sent", "연습 모드 · 실제 동작 없음") : Ui.T("Live mode · actions enabled", "실제 동작 실행 중"); }
     internal void StartTrial(ClickGesture expected)
     {
         ResetInput(); trial = new Measurement { Expected = expected, Start = clock.ElapsedMilliseconds, Command = "Measure only", Source = "" };

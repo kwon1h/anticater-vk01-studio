@@ -26,13 +26,13 @@ English is the default language. Switch instantly between **English and Korean**
 
 ## Quick start
 
-1. Download `VK01Studio-v1.1.0-win-x64.zip` from [Releases](https://github.com/kwon1h/anticater-vk01-studio/releases/latest) and extract it to a **permanent folder**.
+1. Download the Windows x64 ZIP from [Releases](https://github.com/kwon1h/anticater-vk01-studio/releases/latest) and extract it to a **permanent folder**.
 2. Connect the VK01 over USB. In the **[ANTICATER setup utility](https://anticater.com/pages/download), map the knob click to `F13` and save it to the device**. Keep your existing rotation mappings.
 3. Run `VK01Studio.exe`. Open **Audio outputs**, check at least two playback devices and arrange their cycle order. Optionally include the communications role.
-4. Click **Save changes**. Disable **Practice** or close the settings window to enable real gestures.
-5. Enable **Start with Windows** at the bottom left if desired. Language and startup changes save immediately.
+4. Click **Save changes** to apply your settings to real gestures.
+5. Enable **Start with Windows** at the bottom left if desired. VK01 Studio must also be enabled in Windows startup apps.
 
-> The settings window opens in **practice mode**. Closing the window keeps the app in the tray and resumes saved actions. Use **Exit** in the tray menu to quit completely.
+> The app starts in live mode and keeps saved actions active when the settings window opens. Turn on **Practice** to test without sending actions. Closing the window keeps the app in the tray. Use **Exit** in the tray menu to quit completely.
 
 | Gesture | Default action |
 |---|---|

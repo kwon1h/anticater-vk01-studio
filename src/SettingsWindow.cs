@@ -19,7 +19,7 @@ internal sealed class SettingsWindow : Window
     private readonly Controller controller;
     private Settings draft;
     private string page = "controls";
-    private bool practice = true, building;
+    private bool practice, building;
     private readonly List<Measurement> records = new List<Measurement>();
     private readonly DispatcherTimer timer;
     private readonly string historyPath = Path.Combine(Program.Root, "measurements.json");
@@ -93,9 +93,10 @@ internal sealed class SettingsWindow : Window
         Grid.SetRow(nav, 1); side.Children.Add(nav);
         var sideBottom = Stack(); sideBottom.Margin = new Thickness(20, 20, 18, 25);
         connection = Text("•  VK01", 12, Muted); sideBottom.Children.Add(connection);
-        var startup = Switch(T("Start with Windows", "Windows 자동 시작"), Startup.Enabled, value => { Startup.Set(value); Message(value ? T("Autostart enabled", "자동 시작을 켰습니다") : T("Autostart disabled", "자동 시작을 껐습니다"), false); });
+        var startup = Switch(T("Start with Windows", "Windows 자동 시작"), Startup.Enabled, value => { Startup.Set(value); Build(); Message(value && Startup.BlockedByWindows ? T("Enable VK01 Studio in Windows startup apps.", "Windows 시작 앱에서 VK01 Studio를 켜주세요.") : value ? T("Autostart enabled", "자동 시작을 켰습니다") : T("Autostart disabled", "자동 시작을 껐습니다"), value && Startup.BlockedByWindows); });
         startup.Margin = new Thickness(0, 22, 0, 18); startup.FontSize = 11; sideBottom.Children.Add(startup);
-        sideBottom.Children.Add(Text("ANTICATER VK01  /  v1.1.0", 10, Muted)); Grid.SetRow(sideBottom, 2); side.Children.Add(sideBottom); root.Children.Add(side);
+        if (Startup.BlockedByWindows) { var openStartup = Button(T("Open Windows startup apps", "Windows 시작 앱 열기"), () => System.Diagnostics.Process.Start("ms-settings:startupapps"), false); openStartup.FontSize = 10; sideBottom.Children.Add(openStartup); }
+        sideBottom.Children.Add(Text("ANTICATER VK01  /  v1.2.0", 10, Muted)); Grid.SetRow(sideBottom, 2); side.Children.Add(sideBottom); root.Children.Add(side);
         var main = new Grid { Margin = new Thickness(30, 24, 30, 22) };
         main.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); main.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         main.RowDefinitions.Add(new RowDefinition()); main.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -109,7 +110,7 @@ internal sealed class SettingsWindow : Window
         var titleRow = new Grid { Margin = new Thickness(0, 0, 0, 23) }; titleRow.ColumnDefinitions.Add(new ColumnDefinition()); titleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         var title = Stack(); var titleText = Text(page == "audio" ? T("Every output, one click away.", "출력 전환을 더 간편하게.") : page == "calibration" ? T("Find your rhythm.", "내 손의 리듬에 맞추세요.") : T("Make every click count.", "클릭마다 원하는 동작을."), 27, Ink); titleText.FontWeight = FontWeights.SemiBold; title.Children.Add(titleText);
         var subtitle = Text(page == "audio" ? T("Choose your devices. Set the order. Switch directly in Windows.", "장치를 선택하고 순서를 정하세요. Windows에서 직접 전환합니다.") : page == "calibration" ? T("Measure real input and tune the timing to your hand.", "실제 입력을 측정하고 클릭 시간을 내 손에 맞추세요.") : T("One knob for your music, audio and daily flow.", "노브 하나로 음악과 오디오를 편하게 제어하세요."), 12, Muted); subtitle.Margin = new Thickness(0, 7, 0, 0); title.Children.Add(subtitle); titleRow.Children.Add(title);
-        var mode = Switch(T("Practice", "연습 모드"), practice, value => { practice = value; controller.SetPractice(value); }); mode.Margin = new Thickness(12, 0, 0, 0); Grid.SetColumn(mode, 1); titleRow.Children.Add(mode);
+        var mode = Switch(T("Practice", "연습 모드"), practice, value => { practice = value; controller.SetPractice(value); controller.Preview(draft.Clone()); UpdateDirty(); }); mode.Margin = new Thickness(12, 0, 0, 0); Grid.SetColumn(mode, 1); titleRow.Children.Add(mode);
         Grid.SetRow(titleRow, 1); main.Children.Add(titleRow);
         var scroll = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, Padding = new Thickness(0, 0, 5, 0) };
         var content = Stack();
@@ -267,7 +268,7 @@ internal sealed class SettingsWindow : Window
     {
         bool dirty = new JavaScriptSerializer().Serialize(draft) != new JavaScriptSerializer().Serialize(controller.Saved);
         if (save != null) save.IsEnabled = dirty;
-        if (savedNotice != null) savedNotice.Text = dirty ? T("Unsaved changes · preview is active", "미저장 변경값 · 연습에 반영 중") : T("All changes saved · closes to the tray", "저장됨 · 창을 닫아도 트레이에서 계속 동작");
+        if (savedNotice != null) savedNotice.Text = dirty ? (practice ? T("Unsaved changes · preview is active", "미저장 변경값 · 연습에 반영 중") : T("Unsaved changes · saved settings remain active", "미저장 변경값 · 저장된 설정으로 동작 중")) : T("All changes saved · closes to the tray", "저장됨 · 창을 닫아도 트레이에서 계속 동작");
     }
     private void UpdateLive()
     {
@@ -277,7 +278,7 @@ internal sealed class SettingsWindow : Window
         {
             ring.State = state; ring.InvalidateVisual(); pending.Text = draft.LongPressMs + " ms";
             progressTitle.Text = state.Cancelled ? T("Gesture cancelled", "클릭 판정 취소") : state.LongFired ? T("Hold detected", "롱클릭 판정 완료") : state.Down ? T("Keep holding…", "누름 시간 측정 중…") : state.Pending > 0 ? T("Waiting for the next click", "다음 클릭을 기다립니다") : T("Try your VK01", "VK01으로 테스트하세요");
-            progressHint.Text = state.Down ? (state.LongFired ? T("One gesture. No repeats on release.", "계속 누르거나 떼어도 한 번만 실행합니다.") : T("Activates in ", "발동까지 ") + Math.Max(0, state.LongMs - state.HoldMs) + " ms") : state.Pending > 0 ? state.WaitMs + T(" ms remaining", " ms 남음") : T("Or click here / press Space to practice.", "이 원을 클릭하거나 Space로 연습할 수도 있습니다.");
+            progressHint.Text = state.Down ? (state.LongFired ? T("One gesture. No repeats on release.", "계속 누르거나 떼어도 한 번만 실행합니다.") : T("Activates in ", "발동까지 ") + Math.Max(0, state.LongMs - state.HoldMs) + " ms") : state.Pending > 0 ? state.WaitMs + T(" ms remaining", " ms 남음") : practice ? T("Or click here / press Space to practice.", "이 원을 클릭하거나 Space로 연습할 수도 있습니다.") : T("Live mode · turn on Practice to test without actions.", "실제 동작 중 · 실행 없이 테스트하려면 연습 모드를 켜세요.");
             status.Text = state.Status;
         }
         if (DateTime.UtcNow >= nextRefresh) { nextRefresh = DateTime.UtcNow.AddSeconds(2); if (page == "audio") RefreshAudio(false); }
