@@ -6,6 +6,8 @@
  <a href="https://github.com/kwon1h/anticater-vk01-studio/releases/latest"><img src="https://img.shields.io/badge/Windows_x64-Download-73E2C2?style=for-the-badge" alt="Download Windows release"></a>
 </p>
 
+> **Looking for ANTICATER VK01 software?** Visit the [VK01 Studio overview](https://kwon1h.github.io/anticater-vk01-studio/) · [Download for Windows](https://github.com/kwon1h/anticater-vk01-studio/releases/latest) · [한국어 설명서](README.md)
+
 <p align="center"><img src="assets/anticater-vk01.jpg" width="480" alt="Photo of the ANTICATER VK01 VK-01 desktop USB volume knob"></p>
 <p align="center"><strong>Made for this knob — ANTICATER VK01 / VK-01</strong><br>The desktop volume controller with a rotary knob, square base and RGB lighting.</p>
 

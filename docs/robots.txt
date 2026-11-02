@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kwon1h.github.io/anticater-vk01-studio/sitemap.xml

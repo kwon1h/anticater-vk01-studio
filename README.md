@@ -6,6 +6,8 @@
  <a href="https://github.com/kwon1h/anticater-vk01-studio/releases/latest"><img src="https://img.shields.io/badge/Windows_x64-Download-73E2C2?style=for-the-badge" alt="Windows 다운로드"></a>
 </p>
 
+> **ANTICATER VK01 소프트웨어 찾기:** [VK01 Studio 소개 페이지](https://kwon1h.github.io/anticater-vk01-studio/) · [Windows 다운로드](https://github.com/kwon1h/anticater-vk01-studio/releases/latest) · [English setup guide](README.en.md)
+
 <p align="center"><img src="assets/anticater-vk01.jpg" width="480" alt="ANTICATER VK01 VK-01 데스크톱 USB 볼륨 노브 실물 사진"></p>
 <p align="center"><strong>이 노브를 위한 앱입니다 — ANTICATER VK01 / VK-01</strong><br>사각 베이스 위 회전 노브와 RGB 조명이 있는 데스크톱 볼륨 컨트롤러입니다.</p>
 
