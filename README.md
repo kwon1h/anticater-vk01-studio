@@ -1,6 +1,6 @@
 <p align="center"><img src="assets/icon.png" width="88" alt="VK01 Studio 아이콘"></p>
 <h1 align="center">VK01 Studio</h1>
-<p align="center"><strong>ANTICATER VK01을 위한 Windows 커스텀 소프트웨어</strong><br>노브 하나에 음악 제어와 출력 장치 전환까지.</p>
+<p align="center"><strong>ANTICATER VK01을 위한 Windows 커스텀 소프트웨어</strong><br>더블·트리플·롱클릭으로 음악 제어와 출력 장치 전환.</p>
 <p align="center">
  <a href="README.en.md"><img src="https://img.shields.io/badge/Read_in-English-B8A4FF?style=for-the-badge" alt="English README"></a>
  <a href="https://github.com/kwon1h/anticater-vk01-studio/releases/latest"><img src="https://img.shields.io/badge/Windows_x64-Download-73E2C2?style=for-the-badge" alt="Windows 다운로드"></a>
@@ -15,7 +15,7 @@
 
 ## 클릭마다 원하는 동작을
 
-**VK01 Studio**는 안티케이터 ANTICATER VK01 / VK-01 볼륨 노브에 싱글·더블·트리플·롱클릭을 더하는 커뮤니티 앱입니다. 재생 제어, 스피커·헤드폰·USB DAC 전환, 클릭 시간 측정을 하나의 다크 UI에서 설정합니다. 영어가 기본 언어이며 우상단 토글로 한국어를 바로 선택할 수 있습니다.
+**VK01 Studio**는 안티케이터 ANTICATER VK01 / VK-01 볼륨 노브에 싱글·더블·트리플·롱클릭을 더하는 커뮤니티 앱입니다. 알리익스프레스에서 판매되는 VK01 노브의 클릭 동작에 음악 제어와 스피커·헤드폰·USB DAC 출력 장치 전환을 지정할 수 있습니다. 클릭 시간도 설정하고 측정할 수 있습니다. 영어가 기본 언어이며 우상단 토글로 한국어를 바로 선택할 수 있습니다.
 
 | 기능 | 할 수 있는 일 |
 |---|---|
